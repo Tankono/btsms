@@ -14,10 +14,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.btsms.AppPref;
 import com.example.btsms.R;
 import com.example.btsms.bluetooth.BTConnectListener;
 import com.example.btsms.bluetooth.BTController;
 import com.example.btsms.bluetooth.BTDiscoveryListener;
+import com.example.btsms.bluetooth.LogUtils;
 
 import java.util.List;
 
@@ -47,6 +49,7 @@ public class ClientFragment extends Fragment {
 
         tvStatus = view.findViewById(R.id.tvStatus);
         adapter.itemConnect = device -> BTController.getInstance().connect(device);
+
     }
 
     private void initBT() {
@@ -56,9 +59,15 @@ public class ClientFragment extends Fragment {
 
             }
 
+            @SuppressLint("MissingPermission")
             @Override
             public void onFound(BluetoothDevice device) {
-                getActivity().runOnUiThread(() -> adapter.addDevices(device));
+                getActivity().runOnUiThread(() -> {
+                    adapter.addDevices(device);
+                    if(device.getName().contains(AppPref.getIns().getLastDeviceConnected())){
+                        LogUtils.error("found recent device:"+device.getName());
+                    }
+                });
             }
 
             @Override
@@ -75,9 +84,10 @@ public class ClientFragment extends Fragment {
                 getActivity().runOnUiThread(() -> {
                     if(status == 0){
                         tvStatus.setText("Connected:"+device.getName());
+                        AppPref.getIns().saveLastDeviceConnected(device.getName());
                         BTController.getInstance().sendString("btsms");
                     }else {
-                        tvStatus.setText("Fails");
+                        tvStatus.setText("No Device Connected.");
                     }
                 });
 

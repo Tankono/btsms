@@ -30,7 +30,7 @@
         android:id="@+id/tvStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Status..." />
+        android:text="No device connected." />
 
     <TextView
         android:layout_width="match_parent"

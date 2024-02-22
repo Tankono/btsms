@@ -16,14 +16,15 @@
 
         <Button
             android:id="@+id/btHost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
             android:text="Host" />
 
         <Button
             android:id="@+id/btClient"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
             android:text="Client" />
     </LinearLayout>
 

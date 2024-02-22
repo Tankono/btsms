@@ -16,11 +16,11 @@ import com.example.btsms.SmsEntity;
 import java.util.ArrayList;
 
 public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
-    interface OnItemConnect{
-        void connect(BluetoothDevice device);
+    interface OnSMSReply{
+        void sendReply(SmsEntity sms);
     }
     ArrayList<SmsEntity> devices = new ArrayList<>();
-    OnItemConnect itemConnect;
+    OnSMSReply listener;
 
     @NonNull
     @Override
@@ -54,14 +54,11 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
         public SmsViewHoder(@NonNull View itemView) {
             super(itemView);
         }
-        public void bindItem(SmsEntity device){
+        public void bindItem(SmsEntity sms){
             TextView tv = itemView.findViewById(R.id.tvSms);
-            tv.setText(device.content);
-            itemView.findViewById(R.id.btReply).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-//                    if(itemConnect != null) itemConnect.connect(device);
-                }
+            tv.setText(sms.content);
+            itemView.findViewById(R.id.btReply).setOnClickListener(view -> {
+                if(listener != null) listener.sendReply(sms);
             });
         }
     }

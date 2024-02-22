@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppPref.init(this);
+
         setContentView(R.layout.activity_main);
         findViewById(R.id.btHost).setOnClickListener(view -> setupHost());
         findViewById(R.id.btClient).setOnClickListener(view -> setupClient());

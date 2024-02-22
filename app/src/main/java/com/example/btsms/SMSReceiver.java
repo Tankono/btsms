@@ -22,7 +22,6 @@ public class SMSReceiver extends BroadcastReceiver {
                 if (pdus.length == 0) {
                     return;
                 }
-                // large message might be broken into many
                 SmsMessage[] messages = new SmsMessage[pdus.length];
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < pdus.length; i++) {
@@ -33,9 +32,6 @@ public class SMSReceiver extends BroadcastReceiver {
                 String message = sb.toString();
                 LogUtils.error(message);
                 BTController.getInstance().sendString(message);
-//                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                // prevent any other broadcast receivers from receiving broadcast
-                // abortBroadcast();
             }
         }
 

@@ -1,11 +1,15 @@
 package com.example.btsms.ui;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +23,7 @@ import com.example.btsms.SmsEntity;
 import com.example.btsms.bluetooth.BTConnectListener;
 import com.example.btsms.bluetooth.BTController;
 import com.example.btsms.bluetooth.BTDataArrivedListener;
+import com.example.btsms.bluetooth.LogUtils;
 
 public class HostFragment extends Fragment {
     TextView tvStatus;
@@ -41,20 +46,23 @@ public class HostFragment extends Fragment {
         rv.setAdapter(adapter);
 
         getView().findViewById(R.id.btAllowDiscovery).setOnClickListener(view1 -> BTController.getInstance().enableVisibility(300));
+        adapter.listener = sms -> showReplyDialog(sms);
     }
 
     private void initBluetooth(){
         BTController.getInstance().connectListener = new BTConnectListener() {
 
+            @SuppressLint("MissingPermission")
             @Override
             public void onConnect(BluetoothDevice device, int status) {
                 getActivity().runOnUiThread(() -> {
                     if(status == 0) {
                         tvStatus.setText("Connected:"+device.getName());
+                    }else {
+                        tvStatus.setText("No device connected");
                     }
                 });
             }
-
             @Override
             public void onLostConnect(BluetoothDevice device) {
 
@@ -65,14 +73,11 @@ public class HostFragment extends Fragment {
         BTController.getInstance().dataArrivedListener = new BTDataArrivedListener() {
             @Override
             public void onReceivedData(BluetoothDevice device, String data) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SmsEntity sms = new SmsEntity();
-                        sms.owner = "";
-                        sms.content = data;
-                        adapter.addItem(sms);
-                    }
+                getActivity().runOnUiThread(() -> {
+                    SmsEntity sms = new SmsEntity();
+                    sms.owner = "";
+                    sms.content = data;
+                    adapter.addItem(sms);
                 });
             }
 
@@ -81,5 +86,23 @@ public class HostFragment extends Fragment {
 
             }
         };
+    }
+
+    private void showReplyDialog(SmsEntity sms){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setTitle("Reply");
+        alertDialog.setMessage("Message");
+        final EditText input = new EditText(getContext());
+        alertDialog.setView(input);
+        alertDialog.setPositiveButton("YES",
+                (dialog, which) -> {
+                    LogUtils.error("message:"+input.getText());
+                });
+        alertDialog.setNegativeButton("NO",
+                (dialog, which) -> {
+                    dialog.cancel();
+                });
+        alertDialog.show();
+
     }
 }
