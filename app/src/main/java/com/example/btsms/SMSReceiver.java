@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 
 import com.example.btsms.bluetooth.BTController;
-import com.example.btsms.bluetooth.LogUtils;
+import com.example.btsms.bluetooth.Logger;
 
 public class SMSReceiver extends BroadcastReceiver {
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
@@ -17,7 +17,6 @@ public class SMSReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(SMS_RECEIVED)) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                // get sms objects
                 Object[] pdus = (Object[]) bundle.get("pdus");
                 if (pdus.length == 0) {
                     return;
@@ -30,8 +29,8 @@ public class SMSReceiver extends BroadcastReceiver {
                 }
                 String sender = messages[0].getOriginatingAddress();
                 String message = sb.toString();
-                LogUtils.error(message);
-                BTController.getInstance().sendString(message);
+                Logger.log(message);
+                BTController.getInstance().sendString("sms::"+sender+"::"+message);
             }
         }
 

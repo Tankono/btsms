@@ -50,13 +50,17 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
     }
 
     class SmsViewHoder extends RecyclerView.ViewHolder{
-
+        TextView tvSms;
+        TextView tvSender;
         public SmsViewHoder(@NonNull View itemView) {
             super(itemView);
+            tvSms = itemView.findViewById(R.id.tvSms);
+            tvSender = itemView.findViewById(R.id.tvSender);
         }
         public void bindItem(SmsEntity sms){
-            TextView tv = itemView.findViewById(R.id.tvSms);
-            tv.setText(sms.content);
+            tvSms.setText(sms.content);
+            tvSender.setText(sms.owner);
+
             itemView.findViewById(R.id.btReply).setOnClickListener(view -> {
                 if(listener != null) listener.sendReply(sms);
             });

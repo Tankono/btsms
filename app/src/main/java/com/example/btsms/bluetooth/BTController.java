@@ -1,6 +1,5 @@
 package com.example.btsms.bluetooth;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -10,13 +9,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
-import androidx.core.app.ActivityCompat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +30,6 @@ public class BTController {
     public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_OBJECT = 4;
     public static final int MESSAGE_TOAST = 5;
-
     public static final String DEVICE_OBJECT = "device_name";
 
     private static final String APP_NAME = "Btsms";
@@ -73,31 +68,31 @@ public class BTController {
             case MESSAGE_STATE_CHANGE:
                 switch (msg.arg1) {
                     case BTController.STATE_CONNECTED:
-                        LogUtils.error("STATE_CONNECTED....");
+                        Logger.log("STATE_CONNECTED....");
                         if (connectListener != null) {
                             connectListener.onConnect(connectingDevice,0);
                         }
                         break;
                     case STATE_CONNECTING:
-                        LogUtils.error("STATE_CONNECTING....");
+                        Logger.log("STATE_CONNECTING....");
                         break;
                     case STATE_LISTEN:
-                        LogUtils.error("STATE_CONNECTING....");
+                        Logger.log("STATE_CONNECTING....");
                         break;
                     case STATE_NONE:
-                        LogUtils.error("STATE_NONE....");
+                        Logger.log("STATE_NONE....");
                         break;
                 }
                 break;
             case MESSAGE_WRITE:
                 byte[] writeBuf = (byte[]) msg.obj;
-                LogUtils.error("MESSAGE_WRITE....");
+                Logger.log("MESSAGE_WRITE....");
                 String writeMessage = new String(writeBuf);
                 if (dataArrivedListener != null) dataArrivedListener.onSendData(writeMessage);
                 break;
             case MESSAGE_READ:
                 byte[] readBuf = (byte[]) msg.obj;
-                LogUtils.error("MESSAGE_READ....");
+                Logger.log("MESSAGE_READ....");
 
                 String readMessage = new String(readBuf, 0, msg.arg1);
                 if (dataArrivedListener != null)
@@ -105,9 +100,8 @@ public class BTController {
 
                 break;
             case MESSAGE_DEVICE_OBJECT:
-                LogUtils.error("MESSAGE_DEVICE_OBJECT....");
+                Logger.log("MESSAGE_DEVICE_OBJECT....");
                 connectingDevice = msg.getData().getParcelable(DEVICE_OBJECT);
-
                 break;
             case MESSAGE_TOAST:
                 if (connectListener != null) {
@@ -125,11 +119,11 @@ public class BTController {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                LogUtils.error("found devices !");
+                Logger.log("found devices !");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    LogUtils.error("- device bonded:"+device.getName()+ "\n" + device.getAddress());
+                    Logger.log("- device bonded:"+device.getName()+ "\n" + device.getAddress());
                 }
                 if(device.getName() != null) {
                     if(discoveryListener != null) discoveryListener.onFound(device);
@@ -177,13 +171,11 @@ public class BTController {
     }
 
     public synchronized void start() {
-        // Cancel any thread
         if (connectingThread != null) {
             connectingThread.cancel();
             connectingThread = null;
         }
 
-        // Cancel any running thresd
         if (connectedThread != null) {
             connectedThread.cancel();
             connectedThread = null;
@@ -296,7 +288,7 @@ public class BTController {
 
     public void sendString(String msg){
         if (getState() != STATE_CONNECTED) {
-            LogUtils.error("Connection was lost!");
+            Logger.log("Connection was lost!");
             return;
         }
 
@@ -325,12 +317,9 @@ public class BTController {
         msg.setData(bundle);
         handler.sendMessage(msg);
 
-        // Start the service over to restart listening mode
-//        BTController.this.start();
         start();
     }
 
-    // runs while listening for incoming connections
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket serverSocket;
 
@@ -388,7 +377,6 @@ public class BTController {
         }
     }
 
-    // runs while attempting to make an outgoing connection
     @SuppressLint("MissingPermission")
     private class ConnectThread extends Thread {
         private final BluetoothSocket socket;
