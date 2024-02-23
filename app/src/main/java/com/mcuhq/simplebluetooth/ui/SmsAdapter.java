@@ -1,7 +1,5 @@
-package com.example.btsms.ui;
+package com.mcuhq.simplebluetooth.ui;
 
-import android.bluetooth.BluetoothDevice;
-import android.telephony.SmsMessage;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.btsms.R;
-import com.example.btsms.SmsEntity;
+import com.mcuhq.simplebluetooth.R;
+import com.mcuhq.simplebluetooth.SmsEntity;
 
 import java.util.ArrayList;
 

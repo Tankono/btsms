@@ -1,7 +1,5 @@
-package com.example.btsms;
+package com.mcuhq.simplebluetooth;
 
-import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.SharedPreferences;
 

@@ -1,4 +1,4 @@
-package com.example.btsms;
+package com.mcuhq.simplebluetooth;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 
-import com.example.btsms.bluetooth.BTController;
-import com.example.btsms.bluetooth.Logger;
+import com.mcuhq.simplebluetooth.bluetooth.BTController;
+import com.mcuhq.simplebluetooth.bluetooth.Logger;
 
 public class SMSReceiver extends BroadcastReceiver {
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";

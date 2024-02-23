@@ -1,4 +1,4 @@
-package com.example.btsms.helper;
+package com.mcuhq.simplebluetooth.helper;
 
 public class AutoReconnect extends Thread{
     @Override

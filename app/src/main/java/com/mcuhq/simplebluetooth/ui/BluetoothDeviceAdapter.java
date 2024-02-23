@@ -1,4 +1,4 @@
-package com.example.btsms.ui;
+package com.mcuhq.simplebluetooth.ui;
 
 import android.bluetooth.BluetoothDevice;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.btsms.R;
+import com.mcuhq.simplebluetooth.R;
 
 import java.util.ArrayList;
 

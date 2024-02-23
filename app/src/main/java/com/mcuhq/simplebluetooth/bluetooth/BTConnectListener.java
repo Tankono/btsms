@@ -1,8 +1,6 @@
-package com.example.btsms.bluetooth;
+package com.mcuhq.simplebluetooth.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
-
-import java.util.List;
 
 public interface BTConnectListener {
     void onConnect(BluetoothDevice device, int status);

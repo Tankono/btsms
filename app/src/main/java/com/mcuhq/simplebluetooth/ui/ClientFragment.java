@@ -1,4 +1,4 @@
-package com.example.btsms.ui;
+package com.mcuhq.simplebluetooth.ui;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
@@ -15,14 +15,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.btsms.AppPref;
-import com.example.btsms.R;
-import com.example.btsms.SmsEntity;
-import com.example.btsms.bluetooth.BTConnectListener;
-import com.example.btsms.bluetooth.BTController;
-import com.example.btsms.bluetooth.BTDataArrivedListener;
-import com.example.btsms.bluetooth.BTDiscoveryListener;
-import com.example.btsms.bluetooth.Logger;
+import com.mcuhq.simplebluetooth.AppPref;
+import com.mcuhq.simplebluetooth.R;
+import com.mcuhq.simplebluetooth.SmsEntity;
+import com.mcuhq.simplebluetooth.bluetooth.BTConnectListener;
+import com.mcuhq.simplebluetooth.bluetooth.BTController;
+import com.mcuhq.simplebluetooth.bluetooth.BTDataArrivedListener;
+import com.mcuhq.simplebluetooth.bluetooth.BTDiscoveryListener;
+import com.mcuhq.simplebluetooth.bluetooth.Logger;
 
 import java.util.List;
 import java.util.PriorityQueue;

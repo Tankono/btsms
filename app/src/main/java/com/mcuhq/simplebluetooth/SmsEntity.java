@@ -1,4 +1,4 @@
-package com.example.btsms;
+package com.mcuhq.simplebluetooth;
 
 import androidx.annotation.NonNull;
 

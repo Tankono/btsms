@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.btsms"
+    namespace = "com.mcuhq.simplebluetooth"
     compileSdk = 34
 
     defaultConfig {

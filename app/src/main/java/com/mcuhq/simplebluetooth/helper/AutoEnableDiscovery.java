@@ -1,7 +1,7 @@
-package com.example.btsms.helper;
+package com.mcuhq.simplebluetooth.helper;
 
-import com.example.btsms.bluetooth.BTController;
-import com.example.btsms.bluetooth.Logger;
+import com.mcuhq.simplebluetooth.bluetooth.BTController;
+import com.mcuhq.simplebluetooth.bluetooth.Logger;
 
 public class AutoEnableDiscovery extends Thread{
     public boolean isStop = false;

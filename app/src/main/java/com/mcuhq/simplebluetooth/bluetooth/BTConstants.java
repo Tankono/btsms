@@ -1,4 +1,4 @@
-package com.example.btsms.bluetooth;
+package com.mcuhq.simplebluetooth.bluetooth;
 
 public class BTConstants {
    public static final int MESSAGE_STATE_CHANGE    = 1;

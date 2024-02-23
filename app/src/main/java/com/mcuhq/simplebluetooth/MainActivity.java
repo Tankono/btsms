@@ -1,4 +1,4 @@
-package com.example.btsms;
+package com.mcuhq.simplebluetooth;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,9 +9,9 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import com.example.btsms.bluetooth.BTController;
-import com.example.btsms.ui.ClientFragment;
-import com.example.btsms.ui.HostFragment;
+import com.mcuhq.simplebluetooth.bluetooth.BTController;
+import com.mcuhq.simplebluetooth.ui.ClientFragment;
+import com.mcuhq.simplebluetooth.ui.HostFragment;
 
 public class MainActivity extends AppCompatActivity {
     int PERMISSION_CODE = 1010;

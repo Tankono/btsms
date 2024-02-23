@@ -1,4 +1,4 @@
-package com.example.btsms.ui;
+package com.mcuhq.simplebluetooth.ui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -16,13 +16,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.btsms.R;
-import com.example.btsms.SmsEntity;
-import com.example.btsms.bluetooth.BTConnectListener;
-import com.example.btsms.bluetooth.BTController;
-import com.example.btsms.bluetooth.BTDataArrivedListener;
-import com.example.btsms.bluetooth.Logger;
-import com.example.btsms.helper.AutoEnableDiscovery;
+import com.mcuhq.simplebluetooth.R;
+import com.mcuhq.simplebluetooth.SmsEntity;
+import com.mcuhq.simplebluetooth.bluetooth.BTConnectListener;
+import com.mcuhq.simplebluetooth.bluetooth.BTController;
+import com.mcuhq.simplebluetooth.bluetooth.BTDataArrivedListener;
+import com.mcuhq.simplebluetooth.bluetooth.Logger;
+import com.mcuhq.simplebluetooth.helper.AutoEnableDiscovery;
 
 public class HostFragment extends Fragment {
     TextView tvStatus;

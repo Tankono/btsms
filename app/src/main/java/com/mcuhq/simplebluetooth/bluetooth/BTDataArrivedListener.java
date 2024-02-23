@@ -1,4 +1,4 @@
-package com.example.btsms.bluetooth;
+package com.mcuhq.simplebluetooth.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 
