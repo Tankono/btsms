@@ -9,8 +9,11 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import com.mcuhq.simplebluetooth.base.ActivitySingleFragment;
 import com.mcuhq.simplebluetooth.bluetooth.BTController;
+import com.mcuhq.simplebluetooth.helper.SmsHepler;
 import com.mcuhq.simplebluetooth.ui.ClientFragment;
+import com.mcuhq.simplebluetooth.ui.ConversationFragment;
 import com.mcuhq.simplebluetooth.ui.HostFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,16 +22,41 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppPref.init(this);
+        SmsHepler.init(this);
+        BTController.init(this);
+        checkAndRequestPermission();
 
         setContentView(R.layout.activity_main);
         findViewById(R.id.btHost).setOnClickListener(view -> setupHost());
         findViewById(R.id.btClient).setOnClickListener(view -> setupClient());
+    }
 
-        BTController.init(this);
+    private void checkAndRequestPermission(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                     this,
                     new String[]{Manifest.permission.RECEIVE_SMS},
+                    PERMISSION_CODE);
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.READ_SMS},
+                    PERMISSION_CODE);
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    PERMISSION_CODE);
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_CODE);
         }
 
@@ -43,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
                         PERMISSION_CODE);
             }
         }
-
     }
 
     @Override
@@ -52,18 +79,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupHost(){
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, new HostFragment())
-                .commit();
-
+        ActivitySingleFragment.show(this,new HostFragment());
     }
 
     private void setupClient(){
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, new ClientFragment())
-                .commit();
+        ActivitySingleFragment.show(this,new ClientFragment());
     }
 
     @Override

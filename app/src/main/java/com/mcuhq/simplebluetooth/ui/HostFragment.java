@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mcuhq.simplebluetooth.R;
-import com.mcuhq.simplebluetooth.SmsEntity;
+import com.mcuhq.simplebluetooth.MessagEntity;
 import com.mcuhq.simplebluetooth.bluetooth.BTConnectListener;
 import com.mcuhq.simplebluetooth.bluetooth.BTController;
 import com.mcuhq.simplebluetooth.bluetooth.BTDataArrivedListener;
@@ -46,7 +46,7 @@ public class HostFragment extends Fragment {
         rv.setAdapter(adapter);
 
         getView().findViewById(R.id.btAllowDiscovery).setOnClickListener(view1 -> BTController.getInstance().enableVisibility(300));
-        adapter.listener = sms -> showReplyDialog(sms);
+//        adapter.listener = sms -> showReplyDialog(sms);
         enableDiscovery();
     }
 
@@ -77,7 +77,7 @@ public class HostFragment extends Fragment {
             @Override
             public void onReceivedData(BluetoothDevice device, String data) {
                 getActivity().runOnUiThread(() -> {
-                    SmsEntity sms = new SmsEntity(data);
+                    MessagEntity sms = new MessagEntity(data);
                     adapter.addItem(sms);
                 });
             }
@@ -89,9 +89,9 @@ public class HostFragment extends Fragment {
         };
     }
 
-    private void showReplyDialog(SmsEntity sms){
+    private void showReplyDialog(MessagEntity sms){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-        alertDialog.setTitle("Reply:"+sms.owner);
+        alertDialog.setTitle("Reply:"+sms.sender);
         alertDialog.setMessage("Message");
         final EditText input = new EditText(getContext());
         alertDialog.setView(input);
@@ -99,7 +99,7 @@ public class HostFragment extends Fragment {
                 (dialog, which) -> {
                     Logger.log("message:"+input.getText());
                     sms.isReply = true;
-                    sms.content = input.getText().toString().trim();
+                    sms.body = input.getText().toString().trim();
                     BTController.getInstance().sendString(sms.toString());
                 });
         alertDialog.setNegativeButton("NO",

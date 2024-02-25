@@ -1,11 +1,14 @@
 package com.mcuhq.simplebluetooth;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 public class AppPref {
     SharedPreferences pref;
     private static AppPref instance;
+
+    public static BluetoothDevice currentPair;
 
     public static AppPref getIns(){
         return instance;

@@ -7,7 +7,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.btsms"
+        applicationId = "com.mcuhq.simplebluetooth"
         minSdk = 22
         targetSdk = 34
         versionCode = 1
