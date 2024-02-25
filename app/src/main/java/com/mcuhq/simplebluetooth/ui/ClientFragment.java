@@ -27,6 +27,7 @@ import com.mcuhq.simplebluetooth.bluetooth.BTDiscoveryListener;
 import com.mcuhq.simplebluetooth.bluetooth.Logger;
 import com.mcuhq.simplebluetooth.helper.SmsHepler;
 import com.mcuhq.simplebluetooth.helper.SynData;
+import com.mcuhq.simplebluetooth.helper.SynDataThread;
 
 import java.util.List;
 
@@ -66,10 +67,13 @@ public class ClientFragment extends Fragment {
         lastDeviceConnected = AppPref.getIns().getLastDeviceConnected();
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onResume() {
         super.onResume();
+        updateStatus();
+    }
+    @SuppressLint("MissingPermission")
+    private void updateStatus(){
         if(AppPref.currentPair != null){
             tvDeviceName.setText(""+ AppPref.currentPair.getName());
             tvStatus.setText("Connected");
@@ -86,8 +90,18 @@ public class ClientFragment extends Fragment {
             public void onReceivedData(BluetoothDevice device, String data) {
                 getActivity().runOnUiThread(() -> {
                     Logger.log(data);
-                    MessagEntity sms = new MessagEntity(data);
-                    sendSms(sms);
+                    try {
+                        String[] arr = data.split("::");
+                        String cmd = arr[0];
+                        if(cmd.equalsIgnoreCase("cmd")){
+                            String threadId = arr[1];
+                            synThread(threadId);
+                        }else if (cmd.equalsIgnoreCase("reply")){
+                            MessagEntity sms = new MessagEntity(data);
+                            sendSms(sms);
+                        }
+                    }catch (Exception e){}
+
                 });
             }
 
@@ -95,6 +109,26 @@ public class ClientFragment extends Fragment {
             public void onSendData(String data) {
 
             }
+        };
+        BTController.getInstance().connectListener = new BTConnectListener() {
+
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onConnect(BluetoothDevice device, int status) {
+                if(!isAdded()) return;
+                getActivity().runOnUiThread(() -> {
+                    if(status == 0){
+                        AppPref.currentPair = device;
+                    }else {
+                        Logger.log("Device lost connection.");
+                        AppPref.currentPair = null;
+                    }
+                    updateStatus();
+                });
+            }
+
+            @Override
+            public void onLostConnect(BluetoothDevice device) {}
         };
     }
 
@@ -107,15 +141,10 @@ public class ClientFragment extends Fragment {
 
     }
 
+    private void synThread(String threadId){
+        new SynDataThread(threadId).start();
+    }
     private void synMessageWithHost(){
         new SynData().start();
-//        for (MessagEntity msg:adapter.data){
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    BTController.getInstance().sendString(msg.toString());
-//                }
-//            },5000);
-//        }
     }
 }

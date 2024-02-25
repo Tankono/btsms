@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mcuhq.simplebluetooth.R;
 import com.mcuhq.simplebluetooth.MessagEntity;
+import com.mcuhq.simplebluetooth.base.ActivitySingleFragment;
 import com.mcuhq.simplebluetooth.bluetooth.BTConnectListener;
 import com.mcuhq.simplebluetooth.bluetooth.BTController;
 import com.mcuhq.simplebluetooth.bluetooth.BTDataArrivedListener;
@@ -32,7 +33,7 @@ public class HostFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.host_fragment,null);
+        return inflater.inflate(R.layout.fragment_host,null);
     }
 
     @Override
@@ -46,6 +47,7 @@ public class HostFragment extends Fragment {
         tvStatus = view.findViewById(R.id.tvDeviceStatus);
         tvDeviceName = view.findViewById(R.id.tvDeviceName);
 
+        adapter.listener = (itemView, entity, pos) -> ActivitySingleFragment.show(getActivity(), new ConversationHostFragment(entity));
         getView().findViewById(R.id.btAllowDiscovery).setOnClickListener(view1 -> BTController.getInstance().enableVisibility(300));
         enableDiscovery();
     }

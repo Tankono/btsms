@@ -33,6 +33,8 @@ public class MessagEntity {
         try{
             sender = arr[1];
             body = arr[2];
+            threadId =arr[3];
+            type =arr[4];
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -41,7 +43,7 @@ public class MessagEntity {
     @NonNull
     @Override
     public String toString() {
-//        if(isReply) return "reply::"+ sender +"::"+ body;
-        return "sms::"+ sender +"::"+ body;
+        if(isReply) return "reply::"+ sender +"::"+ body+"::"+threadId+"::"+type;
+        return "sms::"+ sender +"::"+ body+"::"+threadId+"::"+type;
     }
 }

@@ -29,7 +29,6 @@ import java.util.List;
 public class ScanFragment extends Fragment {
     RecyclerView recyclerView;
     BluetoothDeviceAdapter adapter = new BluetoothDeviceAdapter();
-//    TextView tvStatus;
     String lastDeviceConnected = "";
     boolean discoveryFinish = false;
 
@@ -52,8 +51,6 @@ public class ScanFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-
-//        tvStatus = view.findViewById(R.id.tvStatus);
         adapter.itemConnect = device -> BTController.getInstance().connect(device);
         lastDeviceConnected = AppPref.getIns().getLastDeviceConnected();
     }
@@ -86,35 +83,27 @@ public class ScanFragment extends Fragment {
             @SuppressLint("MissingPermission")
             @Override
             public void onConnect(BluetoothDevice device, int status) {
+                if(!isAdded()) return;
                 getActivity().runOnUiThread(() -> {
                     if(status == 0){
-//                        tvStatus.setText("Connected:"+device.getName());
                         AppPref.currentPair = device;
-//                        BTController.getInstance().sendString("handshake::CLIENT::hey");
                         getActivity().finish();
                     }else {
-//                        tvStatus.setText("No Device Connected.");
                         Logger.log("Device lost connection.");
                     }
                 });
-
             }
 
             @Override
             public void onLostConnect(BluetoothDevice device) {}
         };
-//        BTController.getInstance().dataArrivedListener = new BTDataArrivedListener() {
-//            @Override
-//            public void onReceivedData(BluetoothDevice device, String data) {
-//                getActivity().runOnUiThread(() -> {
-//                    Logger.log(data);
-//                    MessagEntity sms = new MessagEntity(data);
-//                });
-//            }
-//
-//            @Override
-//            public void onSendData(String data) {}
-//        };
         BTController.getInstance().scanDevice();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        BTController.getInstance().connectListener = null;
+        BTController.getInstance().discoveryListener = null;
     }
 }
