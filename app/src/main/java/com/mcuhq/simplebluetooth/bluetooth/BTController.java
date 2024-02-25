@@ -154,7 +154,6 @@ public class BTController {
         context.registerReceiver(discoveryFinishReceiver, filter);
     }
 
-
     public void enableVisibility(int duration){
         Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         enableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration);
@@ -306,8 +305,6 @@ public class BTController {
         handler.sendMessage(msg);
 
         start();
-
-//        BTController.this.start();
     }
 
     private void connectionLost() {

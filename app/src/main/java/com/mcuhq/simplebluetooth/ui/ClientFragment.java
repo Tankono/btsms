@@ -78,50 +78,50 @@ public class ClientFragment extends Fragment {
     }
 
     private void initBT() {
-        BTController.getInstance().discoveryListener = new BTDiscoveryListener() {
-            @Override
-            public void onDiscoveryDone() {
-                discoveryFinish = true;
-            }
+//        BTController.getInstance().discoveryListener = new BTDiscoveryListener() {
+//            @Override
+//            public void onDiscoveryDone() {
+//                discoveryFinish = true;
+//            }
+//
+//            @SuppressLint("MissingPermission")
+//            @Override
+//            public void onFound(BluetoothDevice device) {
+//                getActivity().runOnUiThread(() -> {
+////                    adapter.addDevices(device);
+//
+//                    if(device.getName().contains(lastDeviceConnected)){
+//                        Logger.log("found recent device:"+device.getName());
+//                        BTController.getInstance().connect(device);
+//                    }
+//                });
+//            }
+//            @Override
+//            public void onGetPairDevices(List<BluetoothDevice> devices) {}
+//        };
 
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onFound(BluetoothDevice device) {
-                getActivity().runOnUiThread(() -> {
-//                    adapter.addDevices(device);
-
-                    if(device.getName().contains(lastDeviceConnected)){
-                        Logger.log("found recent device:"+device.getName());
-                        BTController.getInstance().connect(device);
-                    }
-                });
-            }
-            @Override
-            public void onGetPairDevices(List<BluetoothDevice> devices) {}
-        };
-
-        BTController.getInstance().connectListener = new BTConnectListener() {
-
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onConnect(BluetoothDevice device, int status) {
-                getActivity().runOnUiThread(() -> {
-                    if(status == 0){
-                        tvStatus.setText("Connected:"+device.getName());
-
-                        BTController.getInstance().sendString("handshake::btsms::Demo");
-
-                    }else {
-                        tvStatus.setText("No Device Connected.");
-                        Logger.log("Device lost connection.");
-                    }
-                });
-
-            }
-
-            @Override
-            public void onLostConnect(BluetoothDevice device) {}
-        };
+//        BTController.getInstance().connectListener = new BTConnectListener() {
+//
+//            @SuppressLint("MissingPermission")
+//            @Override
+//            public void onConnect(BluetoothDevice device, int status) {
+//                getActivity().runOnUiThread(() -> {
+//                    if(status == 0){
+//                        tvStatus.setText("Connected:"+device.getName());
+//
+//                        BTController.getInstance().sendString("handshake::btsms::Demo");
+//
+//                    }else {
+//                        tvStatus.setText("No Device Connected.");
+//                        Logger.log("Device lost connection.");
+//                    }
+//                });
+//
+//            }
+//
+//            @Override
+//            public void onLostConnect(BluetoothDevice device) {}
+//        };
         BTController.getInstance().dataArrivedListener = new BTDataArrivedListener() {
             @Override
             public void onReceivedData(BluetoothDevice device, String data) {

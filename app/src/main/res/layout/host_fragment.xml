@@ -6,16 +6,19 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="Host"
+            android:gravity="center"
+            android:text="HOST"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -23,14 +26,11 @@
             android:id="@+id/btAllowDiscovery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enable" />
-    </LinearLayout>
+            android:layout_gravity="right"
+            android:text="Enable Discovery" />
+    </FrameLayout>
 
-    <TextView
-        android:id="@+id/tvStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No device connected." />
+    <include layout="@layout/device_status"/>
 
     <TextView
         android:layout_width="match_parent"

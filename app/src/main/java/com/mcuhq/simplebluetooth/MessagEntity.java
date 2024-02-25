@@ -41,7 +41,7 @@ public class MessagEntity {
     @NonNull
     @Override
     public String toString() {
-        if(isReply) return "reply::"+ sender +"::"+ body;
+//        if(isReply) return "reply::"+ sender +"::"+ body;
         return "sms::"+ sender +"::"+ body;
     }
 }

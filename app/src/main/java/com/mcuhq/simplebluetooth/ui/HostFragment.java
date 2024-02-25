@@ -25,11 +25,10 @@ import com.mcuhq.simplebluetooth.bluetooth.Logger;
 import com.mcuhq.simplebluetooth.helper.AutoEnableDiscovery;
 
 public class HostFragment extends Fragment {
-    TextView tvStatus;
     RecyclerView rv;
     SmsAdapter adapter = new SmsAdapter();
     boolean hasConnectedDevice = false;
-
+    TextView tvStatus,tvDeviceName;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,13 +39,14 @@ public class HostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initBluetooth();
-        tvStatus = view.findViewById(R.id.tvStatus);
         rv = view.findViewById(R.id.rv);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
 
+        tvStatus = view.findViewById(R.id.tvDeviceStatus);
+        tvDeviceName = view.findViewById(R.id.tvDeviceName);
+
         getView().findViewById(R.id.btAllowDiscovery).setOnClickListener(view1 -> BTController.getInstance().enableVisibility(300));
-//        adapter.listener = sms -> showReplyDialog(sms);
         enableDiscovery();
     }
 
@@ -57,14 +57,18 @@ public class HostFragment extends Fragment {
             public void onConnect(BluetoothDevice device, int status) {
                 getActivity().runOnUiThread(() -> {
                     if(status == 0) {
-                        tvStatus.setText("Connected:"+device.getName());
+                        tvStatus.setText("Connected");
+                        tvDeviceName.setText(device.getName());
+
                         hasConnectedDevice = true;
                         auto.isStop = true;
                         auto.interrupt();
                     }else {
-                        tvStatus.setText("No device connected, auto enable for discovery.");
+                        tvStatus.setText("No device connected.");
+                        tvDeviceName.setText("N/A");
                         hasConnectedDevice = false;
                         enableDiscovery();
+                        adapter.clear();
                     }
                 });
             }
