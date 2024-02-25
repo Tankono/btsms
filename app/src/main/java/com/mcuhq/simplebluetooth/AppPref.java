@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class AppPref {
     SharedPreferences pref;
+    public static String fileSelectPath;
+
     private static AppPref instance;
     public static BluetoothDevice currentPair;
     public static ArrayList<MessagEntity> messageList = new ArrayList<>();

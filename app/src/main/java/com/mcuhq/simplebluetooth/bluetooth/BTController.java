@@ -38,7 +38,7 @@ public class BTController {
     private final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private AcceptThread acceptThread;
     private ConnectThread connectingThread;
-    private ReadWriteThread connectedThread;
+    private ReadWriteThread readWriteThread;
     private int state;
 
     public static final int STATE_NONE = 0;
@@ -175,9 +175,9 @@ public class BTController {
             connectingThread = null;
         }
 
-        if (connectedThread != null) {
-            connectedThread.cancel();
-            connectedThread = null;
+        if (readWriteThread != null) {
+            readWriteThread.cancel();
+            readWriteThread = null;
         }
 
         setState(STATE_LISTEN);
@@ -195,9 +195,9 @@ public class BTController {
             }
         }
 
-        if (connectedThread != null) {
-            connectedThread.cancel();
-            connectedThread = null;
+        if (readWriteThread != null) {
+            readWriteThread.cancel();
+            readWriteThread = null;
         }
 
         connectingThread = new ConnectThread(device);
@@ -213,9 +213,9 @@ public class BTController {
         }
 
         // Cancel running thread
-        if (connectedThread != null) {
-            connectedThread.cancel();
-            connectedThread = null;
+        if (readWriteThread != null) {
+            readWriteThread.cancel();
+            readWriteThread = null;
         }
 
         if (acceptThread != null) {
@@ -223,8 +223,8 @@ public class BTController {
             acceptThread = null;
         }
 
-        connectedThread = new ReadWriteThread(socket);
-        connectedThread.start();
+        readWriteThread = new ReadWriteThread(socket);
+        readWriteThread.start();
 
         Message msg = handler.obtainMessage(MESSAGE_DEVICE_OBJECT);
         Bundle bundle = new Bundle();
@@ -241,9 +241,9 @@ public class BTController {
             connectingThread = null;
         }
 
-        if (connectedThread != null) {
-            connectedThread.cancel();
-            connectedThread = null;
+        if (readWriteThread != null) {
+            readWriteThread.cancel();
+            readWriteThread = null;
         }
 
         if (acceptThread != null) {
@@ -258,7 +258,7 @@ public class BTController {
         synchronized (this) {
             if (state != STATE_CONNECTED)
                 return;
-            r = connectedThread;
+            r = readWriteThread;
         }
         r.write(out);
     }
@@ -295,6 +295,14 @@ public class BTController {
             byte[] send = msg.getBytes();
             write(send);
         }
+    }
+
+    public void sendFile(String filePath){
+        //start thread receive file data
+        //send file data
+        //close
+        FileTransferThread sendfile = new FileTransferThread(readWriteThread.bluetoothSocket, filePath);
+        sendfile.start();
     }
 
     private void connectionFailed() {

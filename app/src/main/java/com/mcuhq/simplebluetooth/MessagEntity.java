@@ -16,6 +16,8 @@ public class MessagEntity {
 
     public boolean isSMS = true;
     public Bitmap bitmap;
+    public String imageFilePath;
+
     public MessagEntity(){}
     public MessagEntity(String sender, String content){
         this.sender = sender;
@@ -35,6 +37,11 @@ public class MessagEntity {
             body = arr[2];
             threadId =arr[3];
             type =arr[4];
+            if(arr[5].equalsIgnoreCase("1")){
+                isSMS = true;
+            }else {
+                isSMS = false;
+            }
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -43,7 +50,9 @@ public class MessagEntity {
     @NonNull
     @Override
     public String toString() {
-        if(isReply) return "reply::"+ sender +"::"+ body+"::"+threadId+"::"+type;
-        return "sms::"+ sender +"::"+ body+"::"+threadId+"::"+type;
+        int ismsm = isSMS ? 1 : 0;
+        String sms = sender +"::"+ body+"::"+threadId+"::"+type+"::"+ismsm;
+        if(isReply) return "reply::"+ sms;
+        return "sms::"+ sms;
     }
 }

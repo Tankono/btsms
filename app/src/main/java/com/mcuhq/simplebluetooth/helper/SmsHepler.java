@@ -19,10 +19,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 public class SmsHepler {
     private static SmsHepler instance;
@@ -55,19 +53,7 @@ public class SmsHepler {
             String body = null;
             Bitmap bitmap = null;
             String address = getANumber(cursor.getInt(cursor.getColumnIndexOrThrow ("_id")));
-//            String name = null;
-//            String photoUri = null;
-//            String date = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date(cursor.getLong(cursor.getColumnIndexOrThrow("date"))*1000));
-//            if (address.length() > 0) {
-//                String[] contactData = getContactByNumber(address);
-//                if (contactData != null) {
-//                    name = contactData[0];
-//                    if (contactData[1] != null)
-//                        photoUri = contactData[1];
-//                }
-//            } else {
-//                address = "na";
-//            }
+
             int int_Type = cursor.getInt(cursor.getColumnIndexOrThrow("m_type"));
             String selectionPart = new String ("mid = '" + cursor.getString(0) + "'");
             Cursor curPart = contentResolver. query (Uri.parse ("content://mms/part"), null, selectionPart, null, null);
@@ -89,12 +75,16 @@ public class SmsHepler {
             obj.isSMS = false;
             obj.bitmap = bitmap;
             obj.body = body;
+            if(address.equalsIgnoreCase("insert-address-token")){
+                address = "";
+            }
             obj.sender = address;
             obj.dateTime = new Date(cursor.getLong(cursor.getColumnIndexOrThrow("date"))*1000);
 
             if(int_Type == 128){
                 obj.type = "sent";
             }
+
             sms.add(obj);
         }
         cursor.close();
@@ -202,7 +192,7 @@ public class SmsHepler {
     }
 
 
-    public ArrayList<MessagEntity> getSmsForThread() {
+    public ArrayList<MessagEntity> getSmsByThread() {
         ArrayList<MessagEntity> sms = new ArrayList<>();
         Cursor c = contentResolver.query(Telephony.Sms.CONTENT_URI, null, "thread_id IS NOT NULL) GROUP BY (thread_id", null, "date DESC");
         if(c == null) return sms;
@@ -210,6 +200,7 @@ public class SmsHepler {
         if (c.moveToFirst()) {
             for (int j = 0; j < totalSMS; j++) {
                 MessagEntity obj = getSMSObject(c);
+                obj.type = "short";
                 sms.add(obj);
                 c.moveToNext();
             }
@@ -247,7 +238,7 @@ public class SmsHepler {
         return  cursor.getString(cursor.getColumnIndexOrThrow(name));
     }
 
-    public ArrayList<MessagEntity> getSmsForThread(String threadId) {
+    public ArrayList<MessagEntity> getSmsByThread(String threadId) {
         ArrayList<MessagEntity> sms = new ArrayList<>();
         Cursor c = contentResolver.query(Telephony.Sms.CONTENT_URI,
                 null, "thread_id = "+threadId,

@@ -2,7 +2,6 @@ package com.mcuhq.simplebluetooth.helper;
 
 import android.os.Build;
 
-import com.mcuhq.simplebluetooth.AppPref;
 import com.mcuhq.simplebluetooth.MessagEntity;
 import com.mcuhq.simplebluetooth.bluetooth.BTController;
 
@@ -18,7 +17,7 @@ public class SynDataThread extends Thread{
         super.run();
         ArrayList<MessagEntity> data = new ArrayList<>();
         data.addAll(SmsHepler.Instance().getMMS(threadId));
-        data.addAll(SmsHepler.Instance().getSmsForThread(threadId));
+        data.addAll(SmsHepler.Instance().getSmsByThread(threadId));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             data.sort((t2, t1) -> {

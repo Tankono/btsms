@@ -1,5 +1,7 @@
 package com.mcuhq.simplebluetooth.ui;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +26,16 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
     @Override
     public SmsViewHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         int itemViewId = R.layout.item_sms;
-        if(viewType == 1){
-            itemViewId = R.layout.item_sms_sent;
+        switch (viewType){
+            case 0:
+                itemViewId = R.layout.item_sms;
+                break;
+            case 1:
+                itemViewId = R.layout.item_sms_sent;
+                break;
+            case 2:
+                itemViewId = R.layout.item_sms_short;
+                break;
         }
         View v = LayoutInflater.from(parent.getContext()).inflate(itemViewId,parent,false);
         return new SmsViewHoder(v);
@@ -34,6 +44,7 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
     @Override
     public int getItemViewType(int position) {
         if(data.get(position).type.equalsIgnoreCase("sent")) return 1;
+        if(data.get(position).type.equalsIgnoreCase("short")) return 2;
         return 0;
     }
 
@@ -44,7 +55,6 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
             holder.itemView.setOnClickListener(view -> listener.onClickItem(view, data.get(position),position));
         }
     }
-
     @Override
     public int getItemCount() {
         return data.size();
@@ -75,11 +85,18 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
         }
         public void bindItem(MessagEntity sms){
             tvSms.setText(sms.body);
+            if(sms.body == null){
+                tvSms.setVisibility(View.GONE);
+            }
             tvSender.setText(sms.sender);
             String date = new SimpleDateFormat("dd-MMM-yyyy HH:mm").format(sms.dateTime);
             tvDatetime.setText(date);
-            if(sms.bitmap != null){
+            if(sms.bitmap != null && iv != null){
                 iv.setImageBitmap(sms.bitmap);
+            }
+            if(sms.imageFilePath != null){
+                Bitmap bmp = BitmapFactory.decodeFile(sms.imageFilePath);
+                iv.setImageBitmap(bmp);
             }
         }
     }

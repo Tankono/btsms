@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mcuhq.simplebluetooth.AppPref;
 import com.mcuhq.simplebluetooth.R;
 import com.mcuhq.simplebluetooth.MessagEntity;
+import com.mcuhq.simplebluetooth.base.ActivitySingleFragment;
 import com.mcuhq.simplebluetooth.bluetooth.BTConnectListener;
 import com.mcuhq.simplebluetooth.bluetooth.BTController;
 import com.mcuhq.simplebluetooth.bluetooth.BTDataArrivedListener;
@@ -87,7 +88,8 @@ public class ScanFragment extends Fragment {
                 getActivity().runOnUiThread(() -> {
                     if(status == 0){
                         AppPref.currentPair = device;
-                        getActivity().finish();
+//                        getActivity().finish();
+                        ActivitySingleFragment.show(getActivity(),new FileSendFragment());
                     }else {
                         Logger.log("Device lost connection.");
                     }

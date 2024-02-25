@@ -65,6 +65,7 @@ public class HostFragment extends Fragment {
                         hasConnectedDevice = true;
                         auto.isStop = true;
 //                        auto.interrupt();
+
                     }else {
                         tvStatus.setText("No device connected.");
                         tvDeviceName.setText("N/A");

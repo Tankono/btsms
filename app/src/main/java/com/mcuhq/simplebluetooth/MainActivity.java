@@ -15,6 +15,7 @@ import com.mcuhq.simplebluetooth.helper.SmsHepler;
 import com.mcuhq.simplebluetooth.ui.ClientFragment;
 import com.mcuhq.simplebluetooth.ui.ConversationFragment;
 import com.mcuhq.simplebluetooth.ui.HostFragment;
+import com.mcuhq.simplebluetooth.ui.ScanFragment;
 
 public class MainActivity extends AppCompatActivity {
     int PERMISSION_CODE = 1010;
@@ -59,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_CODE);
         }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_CODE);
+        }
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)
@@ -83,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupClient(){
-        ActivitySingleFragment.show(this,new ClientFragment());
+//        ActivitySingleFragment.show(this,new ClientFragment());
+        ActivitySingleFragment.show(this,new ScanFragment());
     }
 
     @Override

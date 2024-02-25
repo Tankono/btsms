@@ -39,7 +39,7 @@ public class ConversationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ArrayList<MessagEntity> data = new ArrayList<>();
         data.addAll(SmsHepler.Instance().getMMS(sms.threadId));
-        data.addAll(SmsHepler.Instance().getSmsForThread(sms.threadId));
+        data.addAll(SmsHepler.Instance().getSmsByThread(sms.threadId));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             data.sort((t2, t1) -> {

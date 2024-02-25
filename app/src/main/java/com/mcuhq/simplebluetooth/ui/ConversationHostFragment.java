@@ -85,5 +85,6 @@ public class ConversationHostFragment extends Fragment {
 
         edtReply.setText("");
         BTController.getInstance().sendString(msg.toString());
+        recyclerView.scrollToPosition(adapter.data.size()-1);
     }
 }
