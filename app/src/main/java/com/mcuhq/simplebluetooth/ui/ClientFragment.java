@@ -3,6 +3,7 @@ package com.mcuhq.simplebluetooth.ui;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.mcuhq.simplebluetooth.bluetooth.BTDataArrivedListener;
 import com.mcuhq.simplebluetooth.bluetooth.BTDiscoveryListener;
 import com.mcuhq.simplebluetooth.bluetooth.Logger;
 import com.mcuhq.simplebluetooth.helper.SmsHepler;
+import com.mcuhq.simplebluetooth.helper.SynData;
 
 import java.util.List;
 
@@ -45,7 +47,8 @@ public class ClientFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initBT();
-        adapter.data.addAll(SmsHepler.Instance().getSmsForThread());
+        AppPref.messageList = SmsHepler.Instance().getSmsForThread();
+        adapter.data.addAll(AppPref.messageList);
 
         view.findViewById(R.id.btScan).setOnClickListener(view1 ->{
             ActivitySingleFragment.show(getActivity(),new ScanFragment());
@@ -78,50 +81,6 @@ public class ClientFragment extends Fragment {
     }
 
     private void initBT() {
-//        BTController.getInstance().discoveryListener = new BTDiscoveryListener() {
-//            @Override
-//            public void onDiscoveryDone() {
-//                discoveryFinish = true;
-//            }
-//
-//            @SuppressLint("MissingPermission")
-//            @Override
-//            public void onFound(BluetoothDevice device) {
-//                getActivity().runOnUiThread(() -> {
-////                    adapter.addDevices(device);
-//
-//                    if(device.getName().contains(lastDeviceConnected)){
-//                        Logger.log("found recent device:"+device.getName());
-//                        BTController.getInstance().connect(device);
-//                    }
-//                });
-//            }
-//            @Override
-//            public void onGetPairDevices(List<BluetoothDevice> devices) {}
-//        };
-
-//        BTController.getInstance().connectListener = new BTConnectListener() {
-//
-//            @SuppressLint("MissingPermission")
-//            @Override
-//            public void onConnect(BluetoothDevice device, int status) {
-//                getActivity().runOnUiThread(() -> {
-//                    if(status == 0){
-//                        tvStatus.setText("Connected:"+device.getName());
-//
-//                        BTController.getInstance().sendString("handshake::btsms::Demo");
-//
-//                    }else {
-//                        tvStatus.setText("No Device Connected.");
-//                        Logger.log("Device lost connection.");
-//                    }
-//                });
-//
-//            }
-//
-//            @Override
-//            public void onLostConnect(BluetoothDevice device) {}
-//        };
         BTController.getInstance().dataArrivedListener = new BTDataArrivedListener() {
             @Override
             public void onReceivedData(BluetoothDevice device, String data) {
@@ -149,8 +108,14 @@ public class ClientFragment extends Fragment {
     }
 
     private void synMessageWithHost(){
-        for (MessagEntity msg:adapter.data){
-            BTController.getInstance().sendString(msg.toString());
-        }
+        new SynData().start();
+//        for (MessagEntity msg:adapter.data){
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    BTController.getInstance().sendString(msg.toString());
+//                }
+//            },5000);
+//        }
     }
 }

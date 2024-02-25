@@ -4,12 +4,13 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 public class AppPref {
     SharedPreferences pref;
     private static AppPref instance;
-
     public static BluetoothDevice currentPair;
-
+    public static ArrayList<MessagEntity> messageList = new ArrayList<>();
     public static AppPref getIns(){
         return instance;
     }

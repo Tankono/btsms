@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mcuhq.simplebluetooth.MessagEntity;
 import com.mcuhq.simplebluetooth.R;
+import com.mcuhq.simplebluetooth.bluetooth.BTController;
 import com.mcuhq.simplebluetooth.helper.SmsHepler;
 
 import java.util.ArrayList;

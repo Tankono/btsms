@@ -90,7 +90,7 @@ public class ScanFragment extends Fragment {
                     if(status == 0){
 //                        tvStatus.setText("Connected:"+device.getName());
                         AppPref.currentPair = device;
-                        BTController.getInstance().sendString("handshake::CLIENT::hey");
+//                        BTController.getInstance().sendString("handshake::CLIENT::hey");
                         getActivity().finish();
                     }else {
 //                        tvStatus.setText("No Device Connected.");

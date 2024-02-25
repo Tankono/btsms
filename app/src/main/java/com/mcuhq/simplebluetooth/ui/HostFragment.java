@@ -62,7 +62,7 @@ public class HostFragment extends Fragment {
 
                         hasConnectedDevice = true;
                         auto.isStop = true;
-                        auto.interrupt();
+//                        auto.interrupt();
                     }else {
                         tvStatus.setText("No device connected.");
                         tvDeviceName.setText("N/A");
@@ -82,6 +82,7 @@ public class HostFragment extends Fragment {
             public void onReceivedData(BluetoothDevice device, String data) {
                 getActivity().runOnUiThread(() -> {
                     MessagEntity sms = new MessagEntity(data);
+                    Logger.log(""+data);
                     adapter.addItem(sms);
                 });
             }

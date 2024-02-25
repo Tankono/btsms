@@ -444,7 +444,8 @@ public class BTController {
         }
 
         public void run() {
-            byte[] buffer = new byte[1024];
+//            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[1024*4];
             int bytes;
             while (true) {
                 try {
