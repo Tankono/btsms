@@ -71,7 +71,9 @@ public class SmsHepler {
                 }
             }
             curPart.close();
+
             MessagEntity obj = new MessagEntity();
+            obj.id = ""+cursor.getInt(cursor.getColumnIndexOrThrow ("_id"));
             obj.isSMS = false;
             obj.bitmap = bitmap;
             obj.body = body;
@@ -86,6 +88,7 @@ public class SmsHepler {
             }
 
             sms.add(obj);
+
         }
         cursor.close();
         return sms;
@@ -211,6 +214,7 @@ public class SmsHepler {
     }
     private static MessagEntity getSMSObject(Cursor cursor){
         MessagEntity obj = new MessagEntity();
+        obj.id          = getStringCols(cursor, Telephony.Sms._ID);
         obj.sender      = getStringCols(cursor, Telephony.Sms.ADDRESS);
         obj.body        = getStringCols(cursor, Telephony.Sms.BODY);
         obj.threadId    = getStringCols(cursor,Telephony.Sms.THREAD_ID);
@@ -261,5 +265,9 @@ public class SmsHepler {
     public void sendSms(MessagEntity sms){
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(sms.sender, null, sms.body, null, null);
+    }
+
+    public void synSms(MessagEntity sms){
+
     }
 }

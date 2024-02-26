@@ -62,7 +62,7 @@ public class ConversationHostFragment extends Fragment {
             public void onReceivedData(BluetoothDevice device, String data) {
                 getActivity().runOnUiThread(() -> {
                     MessagEntity sms = new MessagEntity(data);
-                    Logger.log(""+data);
+//                    Logger.log(""+data);
                     adapter.addItem(sms);
                 });
             }

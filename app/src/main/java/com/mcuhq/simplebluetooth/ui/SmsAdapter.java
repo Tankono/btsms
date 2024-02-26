@@ -61,6 +61,13 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
     }
 
     public void addItem(MessagEntity smsMessage){
+        for (MessagEntity sms : data){
+            if(sms.id.equalsIgnoreCase(smsMessage.id)){
+                sms.imageFilePath = smsMessage.imageFilePath;
+                notifyDataSetChanged();
+                return;
+            }
+        }
         data.add(smsMessage);
         notifyDataSetChanged();
     }
@@ -88,15 +95,18 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
             if(sms.body == null){
                 tvSms.setVisibility(View.GONE);
             }
-            tvSender.setText(sms.sender);
+            tvSender.setText(sms.sender+"[id "+sms.id+"]");
             String date = new SimpleDateFormat("dd-MMM-yyyy HH:mm").format(sms.dateTime);
             tvDatetime.setText(date);
-            if(sms.bitmap != null && iv != null){
-                iv.setImageBitmap(sms.bitmap);
-            }
-            if(sms.imageFilePath != null){
-                Bitmap bmp = BitmapFactory.decodeFile(sms.imageFilePath);
-                iv.setImageBitmap(bmp);
+            if(!sms.isSMS){
+                if(sms.bitmap != null && iv != null){
+                    iv.setImageBitmap(sms.bitmap);
+                }
+                if(sms.imageFilePath != null){
+                    Bitmap bmp = BitmapFactory.decodeFile(sms.imageFilePath);
+                    iv.setImageBitmap(bmp);
+                }
+                tvSms.setText("MMS here");
             }
         }
     }

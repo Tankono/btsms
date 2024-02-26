@@ -27,10 +27,11 @@ public class SMSReceiver extends BroadcastReceiver {
                     messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                     sb.append(messages[i].getMessageBody());
                 }
+
                 String sender = messages[0].getOriginatingAddress();
                 String message = sb.toString();
                 Logger.log(message);
-//                BTController.getInstance().sendString("sms::"+sender+"::"+message);
+                BTController.getInstance().sendString("sms::"+sender+"::"+message);
             }
         }
     }

@@ -9,11 +9,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,15 +30,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 @SuppressLint("MissingPermission")
 public class BTController {
+    public static final int BLUE_TOOTH_DIALOG = 0x111;
+    public static final int BLUE_TOOTH_TOAST = 0x123;
+    public static final int BLUE_TOOTH_WRAITE = 0X222;
+    public static final int BLUE_TOOTH_READ = 0X333;
+    public static final int BLUE_TOOTH_WRAITE_FILE_NOW = 0X511;
+    public static final int BLUE_TOOTH_READ_FILE_NOW = 0X996;
+    public static final int BLUE_TOOTH_WRAITE_FILE = 0X555;
+    public static final int BLUE_TOOTH_READ_FILE = 0X888;
+    public static final int BLUE_TOOTH_SUCCESS = 0x444;
+
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_OBJECT = 4;
     public static final int MESSAGE_TOAST = 5;
+
+    public static final int STATE_TRANSFER = 3;
     public static final String DEVICE_OBJECT = "device_name";
 
     private static final String APP_NAME = "Btsms";
@@ -40,6 +63,7 @@ public class BTController {
     private ConnectThread connectingThread;
     private ReadWriteThread readWriteThread;
     private int state;
+    private static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/BTIMBluetooth/";
 
     public static final int STATE_NONE = 0;
     public static final int STATE_LISTEN = 1;
@@ -59,6 +83,9 @@ public class BTController {
 
     private BluetoothDevice connectingDevice;
 
+    private static final int FLAG_MSG = 0;
+    private static final int FLAG_FILE = 1;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private BTController(Context context) {
         this.context = context;
     }
@@ -85,23 +112,40 @@ public class BTController {
                 }
                 break;
             case MESSAGE_WRITE:
-                byte[] writeBuf = (byte[]) msg.obj;
+//                byte[] writeBuf = (byte[]) msg.obj;
                 Logger.log("MESSAGE_WRITE....");
-                String writeMessage = new String(writeBuf);
-                if (dataArrivedListener != null) dataArrivedListener.onSendData(writeMessage);
+//                String writeMessage = new String(writeBuf);
+                String write = (String) msg.obj;
+                if (dataArrivedListener != null) dataArrivedListener.onSendData(write);
                 break;
             case MESSAGE_READ:
-                byte[] readBuf = (byte[]) msg.obj;
+//                byte[] readBuf = (byte[]) msg.obj;
                 Logger.log("MESSAGE_READ....");
-
-                String readMessage = new String(readBuf, 0, msg.arg1);
+//                String readMessage = new String(readBuf, 0, msg.arg1);
+                String read = (String) msg.obj;
                 if (dataArrivedListener != null)
-                    dataArrivedListener.onReceivedData(connectingDevice, readMessage);
+                    dataArrivedListener.onReceivedData(connectingDevice, read);
 
+                break;
+            case BLUE_TOOTH_WRAITE_FILE:
+                Log.i("file", "transfer file finish:"+msg.obj + "");
+                if (dataArrivedListener != null)
+                    dataArrivedListener.onReceivedData(connectingDevice, "file::"+msg.obj);
+                break;
+            case BLUE_TOOTH_WRAITE_FILE_NOW:
+                Logger.log("start transfer file"+msg.obj);
+                break;
+            case BLUE_TOOTH_READ_FILE_NOW:
+                Log.i("file", msg.obj + " file done.");
+                if (dataArrivedListener != null)
+                    dataArrivedListener.onReceivedData(connectingDevice, "file::"+msg.obj);
                 break;
             case MESSAGE_DEVICE_OBJECT:
                 Logger.log("MESSAGE_DEVICE_OBJECT....");
                 connectingDevice = msg.getData().getParcelable(DEVICE_OBJECT);
+                break;
+            case BLUE_TOOTH_READ_FILE:
+                Log.i("file", "文件接收完成(" + msg.obj + ")");
                 break;
             case MESSAGE_TOAST:
                 if (connectListener != null) {
@@ -134,11 +178,13 @@ public class BTController {
         }
     };
 
+    private void sendMessageToUi(int what, Object s) {
+        Message message = handler.obtainMessage();
+        message.what = what;
+        message.obj = s;
+        handler.sendMessage(message);
+    }
     public void scanDevice() {
-//        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-//            LogUtils.error("require permission:Manifest.permission.BLUETOOTH_SCAN");
-//            return;
-//        }
         if (bluetoothAdapter.isDiscovering()) {
             bluetoothAdapter.cancelDiscovery();
         }
@@ -260,6 +306,7 @@ public class BTController {
                 return;
             r = readWriteThread;
         }
+
         r.write(out);
     }
 
@@ -292,17 +339,67 @@ public class BTController {
         }
 
         if (msg.length() > 0) {
-            byte[] send = msg.getBytes();
-            write(send);
+//            byte[] send = msg.getBytes();
+//            write(send);
+
+            ReadWriteThread r;
+            synchronized (this) {
+                if (state != STATE_CONNECTED)
+                    return;
+                r = readWriteThread;
+            }
+
+            r.writeText(msg);
+
+//            TransferThread r;
+//            synchronized (this) {
+//                if (mState != STATE_TRANSFER) return;
+//                r = mTransferThread;
+//            }
+//            r.write(msg);
         }
+
     }
 
     public void sendFile(String filePath){
-        //start thread receive file data
-        //send file data
-        //close
-        FileTransferThread sendfile = new FileTransferThread(readWriteThread.bluetoothSocket, filePath);
-        sendfile.start();
+        ReadWriteThread r;
+        synchronized (this) {
+            if (getState() != STATE_TRANSFER) return;
+            r = readWriteThread;
+        }
+        r.writeFile(filePath);
+
+    }
+
+    public void sendBitmap(Bitmap bitmap){
+        String filePath = savebitmap(bitmap);
+        if(filePath == null) return;
+
+        ReadWriteThread r;
+        synchronized (this) {
+            if (getState() != STATE_TRANSFER) return;
+            r = readWriteThread;
+        }
+        r.writeFile(filePath);
+
+    }
+
+    public String savebitmap(Bitmap bmp) {
+        try {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.JPEG, 60, bytes);
+            File f = new File(Environment.getExternalStorageDirectory()
+                    + File.separator + "mms_"+System.currentTimeMillis()+".jpg");
+            f.createNewFile();
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bytes.toByteArray());
+            fo.close();
+            return f.getAbsolutePath();
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     private void connectionFailed() {
@@ -435,6 +532,9 @@ public class BTController {
         private final BluetoothSocket bluetoothSocket;
         private final InputStream inputStream;
         private final OutputStream outputStream;
+        private final DataOutputStream OutData;
+        private final DataInputStream inData;
+
 
         public ReadWriteThread(BluetoothSocket socket) {
             this.bluetoothSocket = socket;
@@ -449,10 +549,56 @@ public class BTController {
 
             inputStream = tmpIn;
             outputStream = tmpOut;
+            OutData = new DataOutputStream(outputStream);
+            inData = new DataInputStream(inputStream);
         }
 
         public void run() {
 //            byte[] buffer = new byte[1024];
+//            readScan();
+
+//            byte[] buffer = new byte[1024*4];
+//            int bytes;
+            while (true) {
+                try {
+                    switch (inData.readInt()){
+                        case FLAG_MSG:
+                            String msg = inData.readUTF();
+                            sendMessageToUi(MESSAGE_READ, msg);
+                            break;
+                        case FLAG_FILE:
+                            File destDir = new File(FILE_PATH);
+                            if (!destDir.exists())
+                                destDir.mkdirs();
+                            String fileName = inData.readUTF(); //文件名
+                            long fileLen = inData.readLong(); //文件长度
+//                            sendMessageToUi(BLUE_TOOTH_READ_FILE_NOW, "received : (" + fileName + ")");
+
+                            long len = 0;
+                            int r;
+                            byte[] b = new byte[4 * 1024];
+                            FileOutputStream out = new FileOutputStream(FILE_PATH + fileName);
+                            while ((r = inputStream.read(b)) != -1) {
+                                out.write(b, 0, r);
+                                len += r;
+                                if (len >= fileLen)
+                                    break;
+                            }
+                            Logger.log("save file:"+FILE_PATH);
+                            sendMessageToUi(BLUE_TOOTH_READ_FILE_NOW, FILE_PATH+ fileName );
+
+                            break;
+                    }
+                } catch (IOException e) {
+                    connectionLost();
+                    e.printStackTrace();
+                    BTController.this.start();
+                    break;
+                }
+            }
+        }
+
+        private void readScan(){
             byte[] buffer = new byte[1024*4];
             int bytes;
             while (true) {
@@ -478,6 +624,64 @@ public class BTController {
             }
         }
 
+        public void writeText(final String msg){
+            executorService.execute(new Runnable() {
+                public void run() {
+                    try {
+                        OutData.writeInt(FLAG_MSG);
+                        OutData.writeUTF(msg);
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
+                    sendMessageToUi(MESSAGE_WRITE, msg);
+                }
+            });
+        }
+        public void writeFile(final String filePath) {
+            executorService.execute(new Runnable() {
+                public void run() {
+                    try {
+                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "start send file:(" + filePath + ")");
+                        FileInputStream in = new FileInputStream(filePath);
+                        File file = new File(filePath);
+                        OutData.writeInt(FLAG_FILE);
+                        OutData.writeUTF(file.getName());
+                        OutData.writeLong(file.length());
+                        int r;
+                        byte[] b = new byte[4 * 1024];
+                        while ((r = in.read(b)) != -1) {
+                            OutData.write(b, 0, r);
+                        }
+                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE, filePath);
+                    } catch (Throwable e) {
+                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "write file error..");
+                    }
+                }
+            });
+        }
+//
+//        public void writeBitmap(final Bitmap bitmap) {
+//            executorService.execute(new Runnable() {
+//                public void run() {
+//                    try {
+//                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "start send file:(" + filePath + ")");
+//                        FileInputStream in = new FileInputStream(filePath);
+//                        File file = new File(filePath);
+//                        OutData.writeInt(FLAG_FILE);
+//                        OutData.writeUTF(file.getName());
+//                        OutData.writeLong(file.length());
+//                        int r;
+//                        byte[] b = new byte[4 * 1024];
+//                        while ((r = in.read(b)) != -1) {
+//                            OutData.write(b, 0, r);
+//                        }
+//                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE, filePath);
+//                    } catch (Throwable e) {
+//                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "write file error..");
+//                    }
+//                }
+//            });
+//        }
         public void cancel() {
             try {
                 bluetoothSocket.close();

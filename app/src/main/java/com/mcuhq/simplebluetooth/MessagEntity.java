@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
+import java.io.File;
 import java.util.Date;
 
 public class MessagEntity {
+    public String id;
     public String sender;
     public String body;
     public String threadId;
@@ -33,6 +35,16 @@ public class MessagEntity {
     public MessagEntity(String data){
         String[] arr = data.split("::");
         try{
+            if(arr[0].equalsIgnoreCase("file")){
+                imageFilePath =arr[1] ;
+                String fileName = new File(imageFilePath).getName();
+                String[] part = fileName.split("_");
+                id = part[0];
+                isSMS = false;
+
+                return;
+            }
+
             sender = arr[1];
             body = arr[2];
             threadId =arr[3];
@@ -42,6 +54,7 @@ public class MessagEntity {
             }else {
                 isSMS = false;
             }
+            id = arr[6];
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -51,7 +64,7 @@ public class MessagEntity {
     @Override
     public String toString() {
         int ismsm = isSMS ? 1 : 0;
-        String sms = sender +"::"+ body+"::"+threadId+"::"+type+"::"+ismsm;
+        String sms = sender +"::"+ body+"::"+threadId+"::"+type+"::"+ismsm+"::"+id;
         if(isReply) return "reply::"+ sms;
         return "sms::"+ sms;
     }

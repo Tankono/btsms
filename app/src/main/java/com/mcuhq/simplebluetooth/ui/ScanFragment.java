@@ -54,6 +54,7 @@ public class ScanFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         adapter.itemConnect = device -> BTController.getInstance().connect(device);
         lastDeviceConnected = AppPref.getIns().getLastDeviceConnected();
+        Logger.log("last device:"+lastDeviceConnected);
     }
 
     private void initBT() {
@@ -69,27 +70,32 @@ public class ScanFragment extends Fragment {
                 getActivity().runOnUiThread(() -> {
                     adapter.addDevices(device);
 
-                    if(device.getName().contains(lastDeviceConnected)){
+                    if(device.getName().contains(lastDeviceConnected) && !lastDeviceConnected.isEmpty()){
                         Logger.log("found recent device:"+device.getName());
-//                        BTController.getInstance().connect(device);
+                        BTController.getInstance().connect(device);
                     }
                 });
             }
             @Override
-            public void onGetPairDevices(List<BluetoothDevice> devices) {}
+            public void onGetPairDevices(List<BluetoothDevice> devices) {
+                Logger.log("pair:"+devices.size());
+            }
         };
 
         BTController.getInstance().connectListener = new BTConnectListener() {
-
             @SuppressLint("MissingPermission")
             @Override
             public void onConnect(BluetoothDevice device, int status) {
                 if(!isAdded()) return;
+
                 getActivity().runOnUiThread(() -> {
                     if(status == 0){
                         AppPref.currentPair = device;
-//                        getActivity().finish();
-                        ActivitySingleFragment.show(getActivity(),new FileSendFragment());
+                        AppPref.getIns().saveLastDeviceConnected(device.getName());
+                        getActivity().finish();
+//                        BTController.getInstance().sendString("sms::hey");
+//                        ActivitySingleFragment.show(getActivity(),new FileSendFragment());
+                        ActivitySingleFragment.show(getActivity(),new ClientFragment());
                     }else {
                         Logger.log("Device lost connection.");
                     }

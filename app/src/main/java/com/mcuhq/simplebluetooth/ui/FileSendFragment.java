@@ -29,7 +29,6 @@ import com.mcuhq.simplebluetooth.bluetooth.BTDataArrivedListener;
 import com.mcuhq.simplebluetooth.bluetooth.Logger;
 import com.mcuhq.simplebluetooth.helper.FilePickerHelper;
 import com.mcuhq.simplebluetooth.helper.SmsHepler;
-
 import java.util.ArrayList;
 
 public class FileSendFragment extends Fragment {

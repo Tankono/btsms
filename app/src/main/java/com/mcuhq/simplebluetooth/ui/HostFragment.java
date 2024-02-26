@@ -64,7 +64,6 @@ public class HostFragment extends Fragment {
 
                         hasConnectedDevice = true;
                         auto.isStop = true;
-//                        auto.interrupt();
 
                     }else {
                         tvStatus.setText("No device connected.");
@@ -97,30 +96,6 @@ public class HostFragment extends Fragment {
         };
     }
 
-    private void showReplyDialog(MessagEntity sms){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-        alertDialog.setTitle("Reply:"+sms.sender);
-        alertDialog.setMessage("Message");
-        final EditText input = new EditText(getContext());
-        alertDialog.setView(input);
-        alertDialog.setPositiveButton("YES",
-                (dialog, which) -> {
-                    Logger.log("message:"+input.getText());
-                    sms.isReply = true;
-                    sms.body = input.getText().toString().trim();
-                    BTController.getInstance().sendString(sms.toString());
-                });
-        alertDialog.setNegativeButton("NO",
-                (dialog, which) -> {
-                    dialog.cancel();
-                });
-        alertDialog.show();
-
-    }
-
-    private void sendHandShake(){
-
-    }
     AutoEnableDiscovery auto = new AutoEnableDiscovery();
 
     private void enableDiscovery(){
