@@ -63,7 +63,7 @@ public class BTController {
     private ConnectThread connectingThread;
     private ReadWriteThread readWriteThread;
     private int state;
-    private static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/BTIMBluetooth/";
+    public static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/BTIMBluetooth/";
 
     public static final int STATE_NONE = 0;
     public static final int STATE_LISTEN = 1;
@@ -347,9 +347,10 @@ public class BTController {
                 if (state != STATE_CONNECTED)
                     return;
                 r = readWriteThread;
+                r.writeText(msg);
             }
 
-            r.writeText(msg);
+//            r.writeText(msg);
 
 //            TransferThread r;
 //            synchronized (this) {
@@ -366,8 +367,8 @@ public class BTController {
         synchronized (this) {
             if (getState() != STATE_TRANSFER) return;
             r = readWriteThread;
+            r.writeFile(filePath);
         }
-        r.writeFile(filePath);
 
     }
 
@@ -625,39 +626,64 @@ public class BTController {
         }
 
         public void writeText(final String msg){
-            executorService.execute(new Runnable() {
-                public void run() {
-                    try {
-                        OutData.writeInt(FLAG_MSG);
-                        OutData.writeUTF(msg);
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                    }
-                    sendMessageToUi(MESSAGE_WRITE, msg);
-                }
-            });
+            try {
+                OutData.writeInt(FLAG_MSG);
+                OutData.writeUTF(msg);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            sendMessageToUi(MESSAGE_WRITE, msg);
+//            executorService.execute(new Runnable() {
+//                public void run() {
+//                    try {
+//                        OutData.writeInt(FLAG_MSG);
+//                        OutData.writeUTF(msg);
+//                    } catch (Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//                    sendMessageToUi(MESSAGE_WRITE, msg);
+//                }
+//            });
         }
         public void writeFile(final String filePath) {
-            executorService.execute(new Runnable() {
-                public void run() {
-                    try {
-                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "start send file:(" + filePath + ")");
-                        FileInputStream in = new FileInputStream(filePath);
-                        File file = new File(filePath);
-                        OutData.writeInt(FLAG_FILE);
-                        OutData.writeUTF(file.getName());
-                        OutData.writeLong(file.length());
-                        int r;
-                        byte[] b = new byte[4 * 1024];
-                        while ((r = in.read(b)) != -1) {
-                            OutData.write(b, 0, r);
-                        }
-                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE, filePath);
-                    } catch (Throwable e) {
-                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "write file error..");
-                    }
+            try {
+                sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "start send file:(" + filePath + ")");
+                FileInputStream in = new FileInputStream(filePath);
+                File file = new File(filePath);
+                OutData.writeInt(FLAG_FILE);
+                OutData.writeUTF(file.getName());
+                OutData.writeLong(file.length());
+                int r;
+                byte[] b = new byte[1 * 1024];
+                while ((r = in.read(b)) != -1) {
+                    OutData.write(b, 0, r);
                 }
-            });
+                sendMessageToUi(BLUE_TOOTH_WRAITE_FILE, filePath);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "write file error..");
+            }
+//            executorService.execute(new Runnable() {
+//                public void run() {
+//                    try {
+//                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "start send file:(" + filePath + ")");
+//                        FileInputStream in = new FileInputStream(filePath);
+//                        File file = new File(filePath);
+//                        OutData.writeInt(FLAG_FILE);
+//                        OutData.writeUTF(file.getName());
+//                        OutData.writeLong(file.length());
+//                        int r;
+//                        byte[] b = new byte[4 * 1024];
+//                        while ((r = in.read(b)) != -1) {
+//                            OutData.write(b, 0, r);
+//                        }
+//                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE, filePath);
+//                    } catch (Throwable e) {
+//                        e.printStackTrace();
+//                        sendMessageToUi(BLUE_TOOTH_WRAITE_FILE_NOW, "write file error..");
+//                    }
+//                }
+//            });
         }
 //
 //        public void writeBitmap(final Bitmap bitmap) {

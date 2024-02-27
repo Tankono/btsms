@@ -61,13 +61,16 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
     }
 
     public void addItem(MessagEntity smsMessage){
-        for (MessagEntity sms : data){
-            if(sms.id.equalsIgnoreCase(smsMessage.id)){
-                sms.imageFilePath = smsMessage.imageFilePath;
-                notifyDataSetChanged();
-                return;
+        if(smsMessage.id != null && !smsMessage.id.isEmpty()){
+            for (MessagEntity sms : data){
+                if(smsMessage.id.equalsIgnoreCase(sms.id)){
+                    sms.imageFilePath = smsMessage.imageFilePath;
+                    notifyDataSetChanged();
+                    return;
+                }
             }
         }
+
         data.add(smsMessage);
         notifyDataSetChanged();
     }
@@ -91,11 +94,16 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
             iv = itemView.findViewById(R.id.iv);
         }
         public void bindItem(MessagEntity sms){
+            if(sms.type.equalsIgnoreCase("short")){
+                tvSender.setText(sms.sender);
+//                tvSender.setText(sms.sender+"[id "+sms.id+"]");
+            }else {
+                tvSender.setVisibility(View.GONE);
+            }
             tvSms.setText(sms.body);
             if(sms.body == null){
                 tvSms.setVisibility(View.GONE);
             }
-            tvSender.setText(sms.sender+"[id "+sms.id+"]");
             String date = new SimpleDateFormat("dd-MMM-yyyy HH:mm").format(sms.dateTime);
             tvDatetime.setText(date);
             if(!sms.isSMS){
@@ -106,7 +114,6 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
                     Bitmap bmp = BitmapFactory.decodeFile(sms.imageFilePath);
                     iv.setImageBitmap(bmp);
                 }
-                tvSms.setText("MMS here");
             }
         }
     }

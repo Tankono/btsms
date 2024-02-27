@@ -20,24 +20,29 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <Button
+        <TextView
             android:id="@+id/btScan"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_marginRight="10dp"
-            android:text="Scan" />
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="Scan"
+            android:textAllCaps="true"
+            android:textColor="@color/purple_700"
+            android:textStyle="bold" />
 
     </FrameLayout>
 
     <include layout="@layout/device_status"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_margin="10dp"
         android:text="MESSAGE"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"

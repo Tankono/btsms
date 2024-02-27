@@ -18,6 +18,9 @@ import com.mcuhq.simplebluetooth.helper.PermissionHelper;
 import com.mcuhq.simplebluetooth.ui.HostFragment;
 import com.mcuhq.simplebluetooth.ui.ScanFragment;
 
+import java.io.File;
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
     int PERMISSION_CODE = 1010;
 
@@ -53,7 +56,21 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-//        Testing.test(this);
+        Testing.test(this);
+        deleteFiles(BTController.FILE_PATH);
+    }
+    public void deleteFiles(String path) {
+
+        File file = new File(path);
+
+        if (file.exists()) {
+            String deleteCmd = "rm -r " + path;
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec(deleteCmd);
+                Logger.log("delete temp folder:"+path);
+            } catch (IOException e) { }
+        }
     }
 
     @Override

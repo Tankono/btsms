@@ -32,7 +32,6 @@ public class ClientFragment extends Fragment {
     SmsAdapter adapter = new SmsAdapter();
     TextView tvStatus,tvDeviceName;
     String lastDeviceConnected = "";
-    boolean discoveryFinish = false;
 
     @Nullable
     @Override
@@ -67,7 +66,10 @@ public class ClientFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateStatus();
+        initBT();
     }
+
+
     @SuppressLint("MissingPermission")
     private void updateStatus(){
         if(AppPref.currentPair != null){
@@ -84,6 +86,7 @@ public class ClientFragment extends Fragment {
         BTController.getInstance().dataArrivedListener = new BTDataArrivedListener() {
             @Override
             public void onReceivedData(BluetoothDevice device, String data) {
+                if(!isAdded()) return;
                 getActivity().runOnUiThread(() -> {
                     Logger.log(data);
                     try {

@@ -6,6 +6,7 @@ import android.os.Environment;
 
 import com.mcuhq.simplebluetooth.MessagEntity;
 import com.mcuhq.simplebluetooth.bluetooth.BTController;
+import com.mcuhq.simplebluetooth.bluetooth.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,6 +25,7 @@ public class SynDataThread extends Thread{
         data.addAll(SmsHepler.Instance().getMMS(threadId));
         data.addAll(SmsHepler.Instance().getSmsByThread(threadId));
 
+        Logger.log("syn thread:"+threadId+" with "+data.size()+" item");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             data.sort((t2, t1) -> {
                 if(t2.dateTime.getTime() > t1.dateTime.getTime()){
@@ -33,6 +35,7 @@ public class SynDataThread extends Thread{
                 }
             });
         }
+
         for (MessagEntity sms: data){
             try {
                 if(sms.isSMS){
@@ -44,8 +47,10 @@ public class SynDataThread extends Thread{
                         BTController.getInstance().sendFile(file);
                     }
                 }
+                Logger.log("syn:"+sms.toString());
                 sleep(500);
             }catch (Exception ex){ex.printStackTrace();}
+
         }
     }
     public String savebitmap(MessagEntity sms) {

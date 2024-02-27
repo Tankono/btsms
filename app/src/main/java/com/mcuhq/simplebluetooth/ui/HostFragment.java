@@ -39,7 +39,6 @@ public class HostFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initBluetooth();
         rv = view.findViewById(R.id.rv);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
@@ -52,11 +51,18 @@ public class HostFragment extends Fragment {
         enableDiscovery();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initBluetooth();
+    }
+
     private void initBluetooth(){
         BTController.getInstance().connectListener = new BTConnectListener() {
             @SuppressLint("MissingPermission")
             @Override
             public void onConnect(BluetoothDevice device, int status) {
+                if(!isAdded()) return;
                 getActivity().runOnUiThread(() -> {
                     if(status == 0) {
                         tvStatus.setText("Connected");
@@ -82,11 +88,7 @@ public class HostFragment extends Fragment {
         BTController.getInstance().dataArrivedListener = new BTDataArrivedListener() {
             @Override
             public void onReceivedData(BluetoothDevice device, String data) {
-                getActivity().runOnUiThread(() -> {
-                    MessagEntity sms = new MessagEntity(data);
-                    Logger.log(""+data);
-                    adapter.addItem(sms);
-                });
+                handlerMessage(data);
             }
 
             @Override
@@ -94,6 +96,18 @@ public class HostFragment extends Fragment {
 
             }
         };
+    }
+
+    private void handlerMessage(String data){
+        getActivity().runOnUiThread(() -> {
+            String[] arr = data.split("::");
+            if(arr[0].equalsIgnoreCase("cmd")){
+                return;
+            }
+            MessagEntity sms = new MessagEntity(data);
+            Logger.log(""+data);
+            adapter.addItem(sms);
+        });
     }
 
     AutoEnableDiscovery auto = new AutoEnableDiscovery();

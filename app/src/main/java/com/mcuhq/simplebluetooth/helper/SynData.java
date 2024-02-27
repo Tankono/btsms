@@ -14,5 +14,6 @@ public class SynData extends Thread{
                 sleep(500);
             }catch (Exception ex){ex.printStackTrace();}
         }
+        BTController.getInstance().sendString("cmd::syndone::");
     }
 }

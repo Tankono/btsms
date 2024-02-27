@@ -60,9 +60,10 @@ public class ConversationHostFragment extends Fragment {
         BTController.getInstance().dataArrivedListener = new BTDataArrivedListener() {
             @Override
             public void onReceivedData(BluetoothDevice device, String data) {
+                if(!isAdded()) return;
                 getActivity().runOnUiThread(() -> {
+                    Logger.log("received conversation:"+data);
                     MessagEntity sms = new MessagEntity(data);
-//                    Logger.log(""+data);
                     adapter.addItem(sms);
                 });
             }
@@ -87,4 +88,5 @@ public class ConversationHostFragment extends Fragment {
         BTController.getInstance().sendString(msg.toString());
         recyclerView.scrollToPosition(adapter.data.size()-1);
     }
+
 }

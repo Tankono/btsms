@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
+import com.mcuhq.simplebluetooth.bluetooth.Logger;
+
 import java.io.File;
 import java.util.Date;
 
@@ -56,6 +58,7 @@ public class MessagEntity {
             }
             id = arr[6];
         }catch (Exception ex){
+            Logger.log("msg error:"+data);
             ex.printStackTrace();
         }
     }

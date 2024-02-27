@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SmsHepler {
+
     private static SmsHepler instance;
     private ContentResolver contentResolver;
     private SmsHepler(Context context){
@@ -48,7 +49,7 @@ public class SmsHepler {
         uri = Telephony.Mms.CONTENT_URI;
         Cursor cursor = contentResolver.query(uri, projection, "thread_id = "+threadId, null, "date ASC");
 
-        printColumn(cursor);
+//        printColumn(cursor);
         while(cursor.moveToNext()) {
             String body = null;
             Bitmap bitmap = null;
