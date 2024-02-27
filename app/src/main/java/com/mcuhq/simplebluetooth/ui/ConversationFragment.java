@@ -59,6 +59,7 @@ public class ConversationFragment extends Fragment {
 
         TextView tv = view.findViewById(R.id.tvSender);
         tv.setText(sms.sender);
+        view.findViewById(R.id.btBack).setOnClickListener(view12 -> getActivity().onBackPressed());
     }
 
     private void sendSms(MessagEntity sms){

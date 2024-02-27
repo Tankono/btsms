@@ -49,6 +49,8 @@ public class HostFragment extends Fragment {
         adapter.listener = (itemView, entity, pos) -> ActivitySingleFragment.show(getActivity(), new ConversationHostFragment(entity));
         getView().findViewById(R.id.btAllowDiscovery).setOnClickListener(view1 -> BTController.getInstance().enableVisibility(300));
         enableDiscovery();
+        view.findViewById(R.id.btBack).setOnClickListener(view12 -> getActivity().onBackPressed());
+
     }
 
     @Override
@@ -99,6 +101,8 @@ public class HostFragment extends Fragment {
     }
 
     private void handlerMessage(String data){
+        if(!isAdded()) return;
+
         getActivity().runOnUiThread(() -> {
             String[] arr = data.split("::");
             if(arr[0].equalsIgnoreCase("cmd")){
@@ -123,6 +127,7 @@ public class HostFragment extends Fragment {
         super.onDestroy();
         try {
             auto.interrupt();
+            BTController.getInstance().stop();
         }catch (Exception ex){ex.printStackTrace();}
     }
 }

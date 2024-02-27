@@ -53,6 +53,13 @@ public class ConversationHostFragment extends Fragment {
         });
         TextView tv = view.findViewById(R.id.tvSender);
         tv.setText(sms.sender);
+        view.findViewById(R.id.btBack).setOnClickListener(view12 -> getActivity().onBackPressed());
+//        setUpBT();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         setUpBT();
     }
 
@@ -88,5 +95,4 @@ public class ConversationHostFragment extends Fragment {
         BTController.getInstance().sendString(msg.toString());
         recyclerView.scrollToPosition(adapter.data.size()-1);
     }
-
 }

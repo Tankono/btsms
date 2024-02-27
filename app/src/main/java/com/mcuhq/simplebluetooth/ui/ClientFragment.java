@@ -59,6 +59,7 @@ public class ClientFragment extends Fragment {
                 ActivitySingleFragment.show(getActivity(),new ConversationFragment(entity));
 
         lastDeviceConnected = AppPref.getIns().getLastDeviceConnected();
+        view.findViewById(R.id.btBack).setOnClickListener(view12 -> getActivity().onBackPressed());
     }
 
     @Override
