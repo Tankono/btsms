@@ -101,7 +101,7 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHoder> {
                 tvSender.setVisibility(View.GONE);
             }
             tvSms.setText(sms.body);
-            if(sms.body == null){
+            if(sms.body == null || sms.body.equalsIgnoreCase("null")){
                 tvSms.setVisibility(View.GONE);
             }
             String date = new SimpleDateFormat("dd-MMM-yyyy HH:mm").format(sms.dateTime);

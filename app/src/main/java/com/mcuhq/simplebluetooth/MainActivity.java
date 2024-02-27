@@ -7,6 +7,9 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         AppPref.init(this);
         SmsHepler.init(this);
         BTController.init(this);
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        Testing.test(this);
+//        Testing.test(this);
         deleteFiles(BTController.FILE_PATH);
     }
     public void deleteFiles(String path) {
@@ -69,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
             try {
                 runtime.exec(deleteCmd);
                 Logger.log("delete temp folder:"+path);
-            } catch (IOException e) { }
+            } catch (IOException e) { e.printStackTrace();}
+        }else {
+            Logger.log("not exist folder:"+path);
         }
     }
 

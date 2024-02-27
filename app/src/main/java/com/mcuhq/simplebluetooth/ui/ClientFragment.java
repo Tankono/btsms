@@ -38,11 +38,10 @@ public class ClientFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_client, null);
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initBT();
+//        initBT();
         AppPref.messageList = SmsHepler.Instance().getSmsByThread();
         adapter.data.addAll(AppPref.messageList);
 
@@ -77,7 +76,7 @@ public class ClientFragment extends Fragment {
             tvStatus.setText("Connected");
             synMessageWithHost();
         }else{
-            tvDeviceName.setText("");
+            tvDeviceName.setText("N/A");
             tvStatus.setText("No Device Connected");
         }
     }
