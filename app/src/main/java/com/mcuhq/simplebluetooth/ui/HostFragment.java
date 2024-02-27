@@ -117,6 +117,8 @@ public class HostFragment extends Fragment {
     AutoEnableDiscovery auto = new AutoEnableDiscovery();
 
     private void enableDiscovery(){
+        if(hasConnectedDevice) return;
+
         tvStatus.setText("Waiting device for connected...");
         auto = new AutoEnableDiscovery();
         auto.start();
